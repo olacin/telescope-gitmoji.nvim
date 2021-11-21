@@ -7,16 +7,23 @@ local gm_actions = require("telescope._extensions.gitmoji.actions")
 local gm_picker = require("telescope._extensions.gitmoji.picker")
 local gm_emojis = require("telescope._extensions.gitmoji.emojis")
 
+local action = gm_actions.commit
+
 local search = function(opts)
   opts = opts or {}
 
   defaults = {
-    action = gm_actions.commit
+    action = action
   }
 
   gm_picker(vim.tbl_extend("force", defaults, opts))
 end
 
 return telescope.register_extension {
-  exports = { search = search }
+  setup = function(cfg)
+    action = cfg.action or gm_actions.commit
+  end,
+  exports = {
+    search = search
+  }
 }

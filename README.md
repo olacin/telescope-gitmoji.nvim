@@ -39,6 +39,9 @@ telescope.setup({
                 --     value = "🎨"
                 -- }
                 vim.ui.input({ prompt = "Enter commit msg: " .. entry.value .. " "}, function(msg)
+                    if not msg then
+                        return
+                    end
                     vim.cmd(':G commit -m "' .. entry.value .. ' ' .. msg .. '"')
                 end)
             end,

@@ -267,6 +267,26 @@ local emojis = {
         value = "🩺",
         description = "Add or update healthcheck.",
     },
+    {
+        value = "🧱",
+        description = "Infrastructure related changes.",
+    },
+    {
+        value = "🧑‍💻",
+        description = "Improve developer experience.",
+    },
+    {
+        value = "💸",
+        description = "Add sponsorships or money related infrastructure.",
+    },
+    {
+        value = "🧵",
+        description = "Add or update code related to multithreading or concurrency.",
+    },
+    {
+        value = "🦺",
+        description = "Add or update code related to validation.",
+    },
 }
 
 return emojis

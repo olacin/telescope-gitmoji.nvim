@@ -1,0 +1,33 @@
+name: auto update emojis
+on:
+  schedule:
+    - cron: "0 16 * * *"
+
+jobs:
+  update-emojis:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: fetch gitmojis.json
+        run: |
+          wget https://raw.githubusercontent.com/carloscuesta/gitmoji/master/packages/gitmojis/src/gitmojis.json -O /tmp/gitmojis.json
+
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: generate emojis.lua
+        run: |
+          python scripts/update.py /tmp/gitmojis.json lua/telescope/_extensions/gitmoji/emojis.lua
+
+      - name: format code
+        uses: JohnnyMorganz/stylua-action@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          version: latest
+          args: -v .
+
+      - name: create PR
+        uses: peter-evans/create-pull-request@v4

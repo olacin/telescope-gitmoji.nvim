@@ -8,26 +8,20 @@ jobs:
   update-emojis:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-        with:
-          persist-credentials: false
-          fetch-depth: 0
-
-      - uses: leafo/gh-actions-lua@v9
-
-      - uses: leafo/gh-actions-luarocks@v4
+      - uses: actions/checkout@v3
 
       - name: fetch gitmojis.json
         run: |
           wget https://raw.githubusercontent.com/carloscuesta/gitmoji/master/packages/gitmojis/src/gitmojis.json -O /tmp/gitmojis.json
 
-      - name: install dependencies
-        run: |
-          luarocks install lua-cjson
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
 
       - name: generate emojis.lua
         run: |
-          lua scripts/update.lua > lua/telescope/_extensions/gitmoji/emojis.lua
+          python scripts/update.py /tmp/gitmojis.json lua/telescope/_extensions/gitmoji/emojis.lua
 
       - name: format code
         uses: JohnnyMorganz/stylua-action@v2
@@ -36,21 +30,5 @@ jobs:
           version: latest
           args: -v .
 
-      - name: commit new file
-        id: commit
-        run: |
-          git config --local user.name "github-actions[bot]"
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          if [[ `git status --porcelain` ]]; then
-            git add lua/telescope/_extensions/gitmoji/emojis.lua
-            git commit -a -m "chore(emojis): auto-update"
-            echo "ok=$?" >> $GITHUB_OUTPUT
-          else
-            echo "No changes detected"
-          fi
-
-      - name: Push changes
-        if: steps.commit.outputs.ok == 0
-        uses: ad-m/github-push-action@master
-        with:
-          branch: ${{ github.ref }}
+      - name: create PR
+        uses: peter-evans/create-pull-request@v4

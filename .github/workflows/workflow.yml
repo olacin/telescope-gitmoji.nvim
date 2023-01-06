@@ -1,0 +1,52 @@
+name: auto update emojis
+on:
+  [push, pull_request]
+  # schedule:
+  #   - cron: "0 0 * * *"
+
+jobs:
+  update-emojis:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      - uses: leafo/gh-actions-lua@v5
+        with:
+          luaVersion: "5.1"
+
+      - uses: leafo/gh-actions-luarocks@v2
+
+      - name: fetch gitmojis.json
+        run: |
+          wget https://raw.githubusercontent.com/carloscuesta/gitmoji/master/packages/gitmojis/src/gitmojis.json -O /tmp/gitmojis.json
+
+      - name: install dependencies
+        run: |
+          luarocks install lua-cjson
+
+      - name: generate emojis.lua
+        run: |
+          lua scripts/update.lua > lua/telescope/_extensions/gitmoji/emojis.lua
+
+      - name: commit new file
+        id: commit
+        run: |
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          if [[ `git status --porcelain` ]]; then
+            git add .
+            git commit -a -m "chore(emojis): auto-update emojis"
+            echo ::set-output name=ok::$?
+          else
+            echo "No changes detected"
+          fi
+
+      - name: Push changes
+        if: steps.commit.outputs.ok == 0
+        uses: ad-m/github-push-action@master
+        with:
+          ssh: true
+          branch: ${{ github.ref }}

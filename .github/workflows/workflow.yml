@@ -35,9 +35,9 @@ jobs:
           git config --local user.name "github-actions[bot]"
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           if [[ `git status --porcelain` ]]; then
-            git add .
-            git commit -a -m "chore(emojis): auto-update emojis"
-            echo ::set-output name=ok::$?
+            git add lua/telescope/_extensions/gitmoji/emojis.lua
+            git commit -a -m "chore(emojis): auto-update"
+            echo "ok=$?" >> $GITHUB_OUTPUT
           else
             echo "No changes detected"
           fi
@@ -46,5 +46,4 @@ jobs:
         if: steps.commit.outputs.ok == 0
         uses: ad-m/github-push-action@master
         with:
-          ssh: true
           branch: ${{ github.ref }}

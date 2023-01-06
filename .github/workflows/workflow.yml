@@ -1,8 +1,7 @@
 name: auto update emojis
 on:
-  [push, pull_request]
-  # schedule:
-  #   - cron: "0 0 * * *"
+  schedule:
+    - cron: "0 16 * * *"
 
 jobs:
   update-emojis:

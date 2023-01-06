@@ -13,11 +13,9 @@ jobs:
           persist-credentials: false
           fetch-depth: 0
 
-      - uses: leafo/gh-actions-lua@v5
-        with:
-          luaVersion: "5.1"
+      - uses: leafo/gh-actions-lua@v9
 
-      - uses: leafo/gh-actions-luarocks@v2
+      - uses: leafo/gh-actions-luarocks@v4
 
       - name: fetch gitmojis.json
         run: |

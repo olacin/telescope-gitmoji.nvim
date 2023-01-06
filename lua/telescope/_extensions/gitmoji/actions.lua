@@ -4,7 +4,8 @@ local actions = require("telescope.actions")
 local gm_actions = {}
 
 gm_actions.commit = function(entry)
-    vim.ui.input({ prompt = "Enter commit msg: " .. entry.value .. " " }, function(msg)
+    local emoji = entry.value.value
+    vim.ui.input({ prompt = "Enter commit message: " .. emoji .. " " }, function(msg)
         if not msg then
             return
         end
@@ -14,7 +15,7 @@ gm_actions.commit = function(entry)
             git_tool = ":G"
         end
 
-        vim.cmd(string.format('%s commit -m "%s %s"', git_tool, entry.value, msg))
+        vim.cmd(string.format('%s commit -m "%s %s"', git_tool, emoji, msg))
     end)
 end
 

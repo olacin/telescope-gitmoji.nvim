@@ -33,16 +33,23 @@ telescope.setup({
         gitmoji = {
             action = function(entry)
                 -- entry = {
-                --     display = "🎨 Improve structure / format of the code.",
-                --     index = 1,
-                --     ordinal = "Improve structure / format of the code.",
-                --     value = "🎨"
+                --   display = "🐛 Fix a bug.",
+                --   index = 4,
+                --   ordinal = "Fix a bug.",
+                --   value = {
+                --     description = "Fix a bug.",
+                --     text = ":bug:",
+                --     value = "🐛"
+                --   }
                 -- }
-                vim.ui.input({ prompt = "Enter commit msg: " .. entry.value .. " "}, function(msg)
+                local emoji = entry.value.value
+                vim.ui.input({ prompt = "Enter commit message: " .. emoji .. " "}, function(msg)
                     if not msg then
                         return
                     end
-                    vim.cmd(':G commit -m "' .. entry.value .. ' ' .. msg .. '"')
+                    -- Insert text instead of emoji in message
+                    local emoji_text = entry.value.text
+                    vim.cmd(':G commit -m "' .. emoji_text .. ' ' .. msg .. '"')
                 end)
             end,
         },
@@ -57,7 +64,8 @@ telescope.load_extension("gitmoji")
 ```lua
 -- Default action (here with tpope vim-fugitive)
 gm_actions.commit = function(entry)
-    vim.ui.input({ prompt = "Enter commit msg: " .. entry.value .. " " }, function(msg)
+    local emoji = entry.value.value
+    vim.ui.input({ prompt = "Enter commit message: " .. emoji .. " " }, function(msg)
         if not msg then
             return
         end
@@ -67,7 +75,7 @@ gm_actions.commit = function(entry)
             git_tool = ":G"
         end
 
-        vim.cmd(string.format('%s commit -m "%s %s"', git_tool, entry.value, msg))
+        vim.cmd(string.format('%s commit -m "%s %s"', git_tool, emoji, msg))
     end)
 end
 ```

@@ -29,6 +29,13 @@ jobs:
         run: |
           lua scripts/update.lua > lua/telescope/_extensions/gitmoji/emojis.lua
 
+      - name: format code
+        uses: JohnnyMorganz/stylua-action@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          version: latest
+          args: -v .
+
       - name: commit new file
         id: commit
         run: |

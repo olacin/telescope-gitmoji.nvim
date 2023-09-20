@@ -20,15 +20,33 @@ function M:_init()
         return
     end
     if vim.fn.filereadable(filename) == 1 then
-        local json = io.open(filename, "r"):read("*a")
-        emoji_data = vim.json.decode(json);
+        local fd = io.open(filename, "r")
+        if fd == nil then
+            emoji_data = {}
+            self:_write()
+            return
+        end
+        local json = fd:read("*a")
+        fd:close()
+        local decoded = pcall(function()
+            emoji_data = vim.json.decode(json);
+        end)
+        if not decoded then
+            emoji_data = {}
+        end
     else
         self:_write()
     end
 end
 
 function M:_write()
-    io.open(filename, "w"):write(vim.json.encode(emoji_data))
+    local fd = io.open(filename, "w")
+    if fd == nil then
+        vim.notify("Failed opening file for writing: " .. filename)
+        return
+    end
+    fd:write(vim.json.encode(emoji_data))
+    fd:close()
 end
 
 function M:record(emoji)
@@ -36,17 +54,17 @@ function M:record(emoji)
     if emoji_data[emoji] == nil then
         emoji_data[emoji] = { count = 0, timestamps = {} }
     end
-    emoji_data[emoji]["count"] = 1 + emoji_data[emoji]["count"]
-    table.insert(emoji_data[emoji]["timestamps"], os.time())
+    emoji_data[emoji].count = 1 + emoji_data[emoji].count
+    table.insert(emoji_data[emoji].timestamps, os.time())
 
-    while #emoji_data[emoji]["timestamps"] > MAX_TIMESTAMPS do
-        table.remove(emoji_data[emoji]["timestamps"], 1)
+    while #emoji_data[emoji].timestamps > MAX_TIMESTAMPS do
+        table.remove(emoji_data[emoji].timestamps, 1)
     end
 
     self:_write()
 end
 
-function calculate_score(timestamps)
+local function calculate_score(timestamps)
     local now = os.time()
     local recency_score = 0
     for _, ts in pairs(timestamps) do

@@ -31,10 +31,11 @@ function M:_init()
         local decoded = pcall(function()
             emoji_data = vim.json.decode(json);
         end)
-        if not decoded then
+        if (not decoded) or (type(emoji_data) ~= "table") then
             emoji_data = {}
         end
     else
+        emoji_data = {}
         self:_write()
     end
 end

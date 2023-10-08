@@ -4,12 +4,12 @@ local M = {}
 
 local MAX_TIMESTAMPS = 10
 local RECENCY_MODIFIER = {
-    [1] = { age = 240, value = 100 },  -- past 4 hours
-    [2] = { age = 1440, value = 80 },  -- past day
-    [3] = { age = 4320, value = 60 },  -- past 3 days
+    [1] = { age = 240, value = 100 }, -- past 4 hours
+    [2] = { age = 1440, value = 80 }, -- past day
+    [3] = { age = 4320, value = 60 }, -- past 3 days
     [4] = { age = 10080, value = 40 }, -- past week
     [5] = { age = 43200, value = 20 }, -- past month
-    [6] = { age = 129600, value = 10 } -- past 90 days
+    [6] = { age = 129600, value = 10 }, -- past 90 days
 }
 local filename = vim.fn.stdpath("data") .. "/gitmoji-data.json"
 
@@ -29,7 +29,7 @@ function M:_init()
         local json = fd:read("*a")
         fd:close()
         local decoded = pcall(function()
-            emoji_data = vim.json.decode(json);
+            emoji_data = vim.json.decode(json)
         end)
         if (not decoded) or (type(emoji_data) ~= "table") then
             emoji_data = {}

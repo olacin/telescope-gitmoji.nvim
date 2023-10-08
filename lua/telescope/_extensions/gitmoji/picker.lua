@@ -4,7 +4,8 @@ local finders = require("telescope.finders")
 local pickers = require("telescope.pickers")
 local conf = require("telescope.config").values
 
-local emojis = require("telescope._extensions.gitmoji.emojis")
+local frecency = require("telescope._extensions.gitmoji.frecency")
+
 
 local picker = function(opts)
     opts = opts or {}
@@ -12,8 +13,10 @@ local picker = function(opts)
     pickers
         .new(opts, {
             prompt_title = "Gitmojis",
-            finder = finders.new_table({
-                results = emojis,
+            finder = finders.new_dynamic({
+                fn = function()
+                    return frecency:get_sorted_emojis()
+                end,
                 entry_maker = function(entry)
                     return {
                         value = entry,
@@ -28,6 +31,7 @@ local picker = function(opts)
                     local entry = actions_state.get_selected_entry()
                     actions.close(prompt_bufnr)
                     opts.action(entry)
+                    frecency:record(entry.value.value)
                 end)
                 return true
             end,

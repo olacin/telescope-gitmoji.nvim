@@ -6,7 +6,6 @@ local conf = require("telescope.config").values
 
 local frecency = require("telescope._extensions.gitmoji.frecency")
 
-
 local picker = function(opts)
     opts = opts or {}
 

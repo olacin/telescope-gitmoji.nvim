@@ -10,7 +10,7 @@ local emojis = {
     { value = "💄", text = ":lipstick:", description = "Add or update the UI and style files." },
     { value = "🎉", text = ":tada:", description = "Begin a project." },
     { value = "✅", text = ":white_check_mark:", description = "Add, update, or pass tests." },
-    { value = "🔒️", text = ":lock:", description = "Fix security issues." },
+    { value = "🔒️", text = ":lock:", description = "Fix security or privacy issues." },
     { value = "🔐", text = ":closed_lock_with_key:", description = "Add or update secrets." },
     { value = "🔖", text = ":bookmark:", description = "Release / Version tags." },
     { value = "🚨", text = ":rotating_light:", description = "Fix compiler / linter warnings." },

@@ -4,11 +4,20 @@ A Telescope integration of [gitmoji](https://gitmoji.dev/).
 
 ## Installation
 
-```
-# vim-plug
+```lua
+-- lazy
+{
+  "olacin/telescope-gitmoji.nvim",
+  config = function()
+      require("telescope").load_extension("gitmoji")
+  end,
+  dependencies = { "nvim-telescope/telescope.nvim", "nvim-lua/plenary.nvim" }
+}
+
+-- vim-plug
 Plug 'olacin/telescope-gitmoji.nvim'
 
-# packer
+-- packer
 use 'olacin/telescope-gitmoji.nvim'
 ```
 
